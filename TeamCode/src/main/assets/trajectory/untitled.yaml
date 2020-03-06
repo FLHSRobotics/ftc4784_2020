@@ -1,0 +1,26 @@
+---
+startPose:
+  x: -24.0
+  y: -65.0
+  heading: 0.0
+steps:
+- pose:
+    x: -24.0
+    y: -36.0
+    heading: 0.0
+  heading: 0.0
+  interpolationType: "LINEAR"
+- pose:
+    x: -24.0
+    y: -35.0
+    heading: 0.0
+  heading: 0.0
+  interpolationType: "LINEAR"
+- pose:
+    x: -24.0
+    y: -50.0
+    heading: 0.0
+  heading: 0.0
+  interpolationType: "SPLINE"
+resolution: 0.25
+version: 2
