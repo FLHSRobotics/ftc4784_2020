@@ -75,7 +75,7 @@ public class BlueStone extends LinearOpMode {
                     .lineToLinearHeading(new Vector2d(-28.0, 33), Math.toRadians(0.0), DriveConstants.STONE_CONSTRAINTS)
                     .build();
             Trajectory t4 = drivetrain.trajectoryBuilder(t3.end())
-                    .lineTo(buildingZonePlace)
+                    .lineTo(new Vector2d(14.0, 24))
                     .addDisplacementMarker(clawSubsystem::release)
                     .build();
             Trajectory t5 = drivetrain.trajectoryBuilder(t4.end(), false)
@@ -93,7 +93,7 @@ public class BlueStone extends LinearOpMode {
                     .lineToLinearHeading(new Vector2d(-60,27), Math.toRadians(0),DriveConstants.STONE_CONSTRAINTS)
                     .build();
             Trajectory stone4Place  = drivetrain.trajectoryBuilder(stone4Trans.end())
-                    .lineTo(new Vector2d(10,28))
+                    .lineTo(new Vector2d(10,24))
                     .addDisplacementMarker(clawSubsystem::release)
                     .build();
 
@@ -127,7 +127,7 @@ public class BlueStone extends LinearOpMode {
                     .lineToLinearHeading(new Vector2d(-35,32), Math.toRadians(4),DriveConstants.STONE_CONSTRAINTS)
                     .build();
             Trajectory t4 = drivetrain.trajectoryBuilder(t3.end())
-                    .lineTo(buildingZonePlace)
+                    .lineTo(new Vector2d(14.0, 26))
                     .addDisplacementMarker(clawSubsystem::release)
                     .build();
             Trajectory t5 = drivetrain.trajectoryBuilder(t4.end())
@@ -146,7 +146,7 @@ public class BlueStone extends LinearOpMode {
                     .lineToLinearHeading(new Vector2d(-60,30), Math.toRadians(2),DriveConstants.STONE_CONSTRAINTS)
                     .build();
             Trajectory stone5Place  = drivetrain.trajectoryBuilder(stone5Trans.end())
-                    .lineTo(new Vector2d(10,27))
+                    .lineTo(new Vector2d(10,26))
                     .addDisplacementMarker(clawSubsystem::release)
                     .build();
             drivetrain.followTrajectory(t1);
@@ -179,7 +179,7 @@ public class BlueStone extends LinearOpMode {
                     .lineToLinearHeading(new Vector2d(-47,30), Math.toRadians(-4),DriveConstants.STONE_CONSTRAINTS)
                     .build();
             Trajectory t5 = drivetrain.trajectoryBuilder(t4.end())
-                    .lineTo(buildingZonePlace)
+                    .lineTo(new Vector2d(14.0, 26))
                     .addDisplacementMarker(clawSubsystem::release)
                     .build();
             Trajectory t6 = drivetrain.trajectoryBuilder(t5.end())
@@ -198,7 +198,7 @@ public class BlueStone extends LinearOpMode {
                     .lineToLinearHeading(new Vector2d(-30.0, 30), Math.toRadians(0.0), DriveConstants.STONE_CONSTRAINTS)
                     .build();
             Trajectory stone1Place = drivetrain.trajectoryBuilder(stone1Trans.end())
-                    .lineTo(new Vector2d(14,30))
+                    .lineTo(new Vector2d(14,26))
                     .addDisplacementMarker(clawSubsystem::release)
                     .build();
 
