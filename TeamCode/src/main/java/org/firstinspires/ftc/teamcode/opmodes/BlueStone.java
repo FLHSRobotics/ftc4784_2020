@@ -7,7 +7,6 @@ import android.util.Log;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -19,13 +18,12 @@ import org.firstinspires.ftc.teamcode.subsystems.FoundationSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.LiftSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TapeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TensorflowVisionSubsystem;
-import org.firstinspires.ftc.teamcode.util.AssetsTrajectoryManager;
 
 import java.util.Comparator;
 import java.util.List;
 
 @Autonomous
-public class RedStone extends LinearOpMode {
+public class BlueStone extends LinearOpMode {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void runOpMode() throws InterruptedException {
@@ -38,12 +36,12 @@ public class RedStone extends LinearOpMode {
         List<Recognition> recognitions = null;
         int state = 0;// ENUM: 0 init,
         int stonePos = 3;
-        Vector2d buildingZonePlace = new Vector2d(14.0, -35.0);
-        Pose2d startPose = new Pose2d(-24, -60, Math.toRadians(90));
+        Vector2d buildingZonePlace = new Vector2d(14.0, 30.0);
+        Pose2d startPose = new Pose2d(-24, 60, Math.toRadians(-90));
         drivetrain.setPoseEstimate(startPose);
 
         Trajectory init = drivetrain.trajectoryBuilder(drivetrain.getPoseEstimate())
-                .lineTo(new Vector2d(-24, -38.0))
+                .lineTo(new Vector2d(-38.0, 38.0))
                 .build();
 
         waitForStart();
@@ -52,8 +50,8 @@ public class RedStone extends LinearOpMode {
         do{
             recognitions = visionSubsystem.getRecognitions();
         } while (recognitions.size() < 2);
-        Thread.sleep(750);
-        recognitions.sort(Comparator.comparingDouble(Recognition::getLeft).reversed());
+        Thread.sleep(1000);
+        recognitions.sort(Comparator.comparingDouble(Recognition::getLeft));
         if (recognitions.get(0).getLabel().equals(TensorflowVisionSubsystem.LABEL_SECOND_ELEMENT)) {
             stonePos = 1;
         } else if (recognitions.get(1).getLabel().equals(TensorflowVisionSubsystem.LABEL_SECOND_ELEMENT)) {
@@ -64,51 +62,51 @@ public class RedStone extends LinearOpMode {
 
         if (stonePos == 1) {
             Trajectory t1 = drivetrain.trajectoryBuilder(init.end())
-                    .lineTo(new Vector2d(-24,-40))
+                    .lineTo(new Vector2d(-28,27))
                     .build();
             Trajectory t2 = drivetrain.trajectoryBuilder(t1.end(), DriveConstants.STONE_CONSTRAINTS)
-                    .lineTo(new Vector2d(-28.0, -26.5))
+                    .lineTo(new Vector2d(-28.0, 26))
                     .addDisplacementMarker(clawSubsystem::pick)
                     .build();
             Trajectory t2_2 = drivetrain.trajectoryBuilder(t2.end())
-                    .lineTo(new Vector2d(-30.0, -35))
+                    .lineTo(new Vector2d(-28,32))
                     .build();
             Trajectory t3 = drivetrain.trajectoryBuilder(t2_2.end())
-                    .lineToLinearHeading(new Vector2d(-32, -32), Math.toRadians(0.0), DriveConstants.STONE_CONSTRAINTS)
-                    .addDisplacementMarker(clawSubsystem::release)
+                    .lineToLinearHeading(new Vector2d(-28.0, 33), Math.toRadians(0.0), DriveConstants.STONE_CONSTRAINTS)
                     .build();
             Trajectory t4 = drivetrain.trajectoryBuilder(t3.end())
                     .lineTo(buildingZonePlace)
+                    .addDisplacementMarker(clawSubsystem::release)
                     .build();
             Trajectory t5 = drivetrain.trajectoryBuilder(t4.end(), false)
-                    .lineToLinearHeading(new Vector2d(-59, -30.0), Math.toRadians(90))
+                    .lineToLinearHeading(new Vector2d(-60, 30), Math.toRadians(-90))
                     .build();
 
             Trajectory stone4Pick = drivetrain.trajectoryBuilder(t5.end())
-                    .lineTo(new Vector2d(-59,-29), DriveConstants.STONE_CONSTRAINTS)
+                    .lineTo(new Vector2d(-60,25.0))
                     .addDisplacementMarker(clawSubsystem::pick)
                     .build();
             Trajectory stone4Move = drivetrain.trajectoryBuilder(stone4Pick.end())
-                    .lineTo(new Vector2d(-56,-34))
+                    .lineTo(new Vector2d(-60,30))
                     .build();
             Trajectory stone4Trans = drivetrain.trajectoryBuilder(stone4Move.end())
-                    .lineToLinearHeading(new Vector2d(-58,-31), Math.toRadians(4.0),DriveConstants.STONE_CONSTRAINTS)
-                    .addDisplacementMarker(clawSubsystem::release)
+                    .lineToLinearHeading(new Vector2d(-60,27), Math.toRadians(0),DriveConstants.STONE_CONSTRAINTS)
                     .build();
             Trajectory stone4Place  = drivetrain.trajectoryBuilder(stone4Trans.end())
-                    .lineTo(new Vector2d(10,-26))
+                    .lineTo(new Vector2d(10,28))
+                    .addDisplacementMarker(clawSubsystem::release)
                     .build();
 
             drivetrain.followTrajectory(t1);
             drivetrain.followTrajectory(t2);
-            Thread.sleep(150);
+            Thread.sleep(200);
             drivetrain.followTrajectory(t2_2);
             drivetrain.followTrajectory(t3);
             drivetrain.followTrajectory(t4);
             Thread.sleep(50);
             drivetrain.followTrajectory(t5);
             drivetrain.followTrajectory(stone4Pick);
-            Thread.sleep(150);
+            Thread.sleep(200);
             drivetrain.followTrajectory(stone4Move);
             drivetrain.followTrajectory(stone4Trans);
             drivetrain.followTrajectory(stone4Place);
@@ -116,45 +114,45 @@ public class RedStone extends LinearOpMode {
         } else if (stonePos == 2) {
             // Stone 2
             Trajectory t1 = drivetrain.trajectoryBuilder(drivetrain.getPoseEstimate())
-                    .lineTo(new Vector2d(-24,-40))
+                    .lineTo(new Vector2d(-35,28))
                     .build();
             Trajectory t2 = drivetrain.trajectoryBuilder(t1.end(),DriveConstants.STONE_CONSTRAINTS)
-                    .lineTo(new Vector2d(-37,-24.5))
+                    .lineTo(new Vector2d(-35,26.5))
                     .addDisplacementMarker(clawSubsystem::pick)
                     .build();
-            Trajectory t2_2 = drivetrain.trajectoryBuilder(t2.end())
-                    .lineTo(new Vector2d(-37,-32))
+            Trajectory t2_w = drivetrain.trajectoryBuilder(t2.end())
+                    .lineTo(new Vector2d(-35,30))
                     .build();
-            Trajectory t3 = drivetrain.trajectoryBuilder(t2_2.end())
-                    .lineToLinearHeading(new Vector2d(-37,-26), Math.toRadians(-4),DriveConstants.STONE_CONSTRAINTS)
+            Trajectory t3 = drivetrain.trajectoryBuilder(t2_w.end())
+                    .lineToLinearHeading(new Vector2d(-35,32), Math.toRadians(4),DriveConstants.STONE_CONSTRAINTS)
                     .build();
             Trajectory t4 = drivetrain.trajectoryBuilder(t3.end())
                     .lineTo(buildingZonePlace)
                     .addDisplacementMarker(clawSubsystem::release)
                     .build();
             Trajectory t5 = drivetrain.trajectoryBuilder(t4.end())
-                    .lineToLinearHeading(new Vector2d(-66,-25), Math.toRadians(90))
+                    .lineToLinearHeading(new Vector2d(-65.0,30), Math.toRadians(-90))
                     .build();
 
             //stone5
             Trajectory stone5Pick = drivetrain.trajectoryBuilder(t5.end())
-                    .lineTo(new Vector2d(-66,-21.5), DriveConstants.STONE_CONSTRAINTS)
+                    .lineTo(new Vector2d(-65,23.5), DriveConstants.STONE_CONSTRAINTS)
                     .addDisplacementMarker(clawSubsystem::pick)
                     .build();
             Trajectory stone5Move = drivetrain.trajectoryBuilder(stone5Pick.end())
-                    .lineTo(new Vector2d(-66,-31))
+                    .lineTo(new Vector2d(-65,30))
                     .build();
             Trajectory stone5Trans = drivetrain.trajectoryBuilder(stone5Move.end())
-                    .lineToLinearHeading(new Vector2d(-66,-28), Math.toRadians(-4),DriveConstants.STONE_CONSTRAINTS)
+                    .lineToLinearHeading(new Vector2d(-60,30), Math.toRadians(2),DriveConstants.STONE_CONSTRAINTS)
                     .build();
             Trajectory stone5Place  = drivetrain.trajectoryBuilder(stone5Trans.end())
-                    .lineTo(new Vector2d(10,-25))
+                    .lineTo(new Vector2d(10,27))
                     .addDisplacementMarker(clawSubsystem::release)
                     .build();
             drivetrain.followTrajectory(t1);
             drivetrain.followTrajectory(t2);
             Thread.sleep(200);
-            drivetrain.followTrajectory(t2_2);
+            drivetrain.followTrajectory(t2_w);
             drivetrain.followTrajectory(t3);
             drivetrain.followTrajectory(t4);
             Thread.sleep(50);
@@ -167,62 +165,62 @@ public class RedStone extends LinearOpMode {
             Thread.sleep(50);
         } else {
             Trajectory t1 = drivetrain.trajectoryBuilder(drivetrain.getPoseEstimate())
-                    .lineTo(new Vector2d(-24,-40))
+                    .lineTo(new Vector2d(-47,30))
                     .build();
             // Stone 3
             Trajectory t2 = drivetrain.trajectoryBuilder(t1.end(),DriveConstants.STONE_CONSTRAINTS)
-                    .lineTo(new Vector2d(-48,-25.5))
+                    .lineTo(new Vector2d(-47,25))
                     .addDisplacementMarker(clawSubsystem::pick)
                     .build();
             Trajectory t3 = drivetrain.trajectoryBuilder(t2.end())
-                    .lineTo(new Vector2d(-48,-30.5))
+                    .lineTo(new Vector2d(-47,33))
                     .build();
             Trajectory t4 = drivetrain.trajectoryBuilder(t3.end())
-                    .lineToLinearHeading(new Vector2d(-48,-30), Math.toRadians(4),DriveConstants.STONE_CONSTRAINTS)
+                    .lineToLinearHeading(new Vector2d(-47,30), Math.toRadians(-4),DriveConstants.STONE_CONSTRAINTS)
                     .build();
             Trajectory t5 = drivetrain.trajectoryBuilder(t4.end())
                     .lineTo(buildingZonePlace)
                     .addDisplacementMarker(clawSubsystem::release)
                     .build();
             Trajectory t6 = drivetrain.trajectoryBuilder(t5.end())
-                    .lineToLinearHeading(new Vector2d(-46,-27), Math.toRadians(90))
+                    .lineToLinearHeading(new Vector2d(-28,30), Math.toRadians(-90))
                     .build();
 
-            //stone2
-            Trajectory stone2Pick = drivetrain.trajectoryBuilder(t6.end())
-                    .lineTo(new Vector2d(-46,-23), DriveConstants.STONE_CONSTRAINTS)
+            //stone1
+            Trajectory stone1Pick= drivetrain.trajectoryBuilder(t6.end(), DriveConstants.STONE_CONSTRAINTS)
+                    .lineTo(new Vector2d(-36.0, 24.5))
                     .addDisplacementMarker(clawSubsystem::pick)
                     .build();
-            Trajectory stone2Move = drivetrain.trajectoryBuilder(stone2Pick.end())
-                    .lineTo(new Vector2d(-46,-32))
+            Trajectory stone1Move= drivetrain.trajectoryBuilder(stone1Pick.end(), DriveConstants.STONE_CONSTRAINTS)
+                    .lineTo(new Vector2d(-36.0, 30))
                     .build();
-            Trajectory stone2Trans = drivetrain.trajectoryBuilder(stone2Move.end())
-                    .lineToLinearHeading(new Vector2d(-35,-32), Math.toRadians(2),DriveConstants.STONE_CONSTRAINTS)
+            Trajectory stone1Trans = drivetrain.trajectoryBuilder(stone1Move.end())
+                    .lineToLinearHeading(new Vector2d(-30.0, 30), Math.toRadians(0.0), DriveConstants.STONE_CONSTRAINTS)
                     .build();
-            Trajectory stone2Place  = drivetrain.trajectoryBuilder(stone2Trans.end())
-                    .lineTo(new Vector2d(10,-32))
+            Trajectory stone1Place = drivetrain.trajectoryBuilder(stone1Trans.end())
+                    .lineTo(new Vector2d(14,30))
                     .addDisplacementMarker(clawSubsystem::release)
                     .build();
+
             drivetrain.followTrajectory(t1);
             drivetrain.followTrajectory(t2);
-            Thread.sleep(200);
+            Thread.sleep(400);
             drivetrain.followTrajectory(t3);
             drivetrain.followTrajectory(t4);
             drivetrain.followTrajectory(t5);
             Thread.sleep(50);
             drivetrain.followTrajectory(t6);
-            drivetrain.followTrajectory(stone2Pick);
+            drivetrain.followTrajectory(stone1Pick);
             Thread.sleep(200);
-            drivetrain.followTrajectory(stone2Move);
-            drivetrain.followTrajectory(stone2Trans);
-            drivetrain.followTrajectory(stone2Place);
+            drivetrain.followTrajectory(stone1Move);
+            drivetrain.followTrajectory(stone1Trans);
+            drivetrain.followTrajectory(stone1Place);
             Thread.sleep(50);
         }
         Thread.sleep(50);
         tapeSubsystem.out();
-        Thread.sleep(500);
+        Thread.sleep(600);
         tapeSubsystem.stop();
-        visionSubsystem.shutdown();
-    }
 
+    }
 }

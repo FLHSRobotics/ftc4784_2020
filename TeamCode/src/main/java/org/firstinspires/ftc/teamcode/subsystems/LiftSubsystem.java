@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -9,6 +11,8 @@ public class LiftSubsystem {
     public LiftSubsystem(HardwareMap hardwareMap){
         this.lift = hardwareMap.get(DcMotorEx.class, "lift");
         this.lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void up(){
@@ -26,7 +30,9 @@ public class LiftSubsystem {
         this.lift.setTargetPosition(encoderTicks);
         this.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.lift.setPower(1);
-        while(this.lift.isBusy());
+        while(this.lift.isBusy()){
+            Log.i("SUBSYSTEM", "Lift Pos:" + this.lift.getCurrentPosition());
+        };
         this.lift.setPower(0);
     }
 }

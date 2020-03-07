@@ -11,8 +11,8 @@ public class FoundationSubsystem{
 
         this.leftServo.setDirection(Servo.Direction.REVERSE);
 
-        this.rightServo.setPosition(0.3);
-        this.leftServo.setPosition(0.3);
+        this.rightServo.setPosition(0.6);
+        this.leftServo.setPosition(0.6);
     }
 
     public void down(){

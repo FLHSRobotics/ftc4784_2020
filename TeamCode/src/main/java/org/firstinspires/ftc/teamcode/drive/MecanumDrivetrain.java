@@ -157,6 +157,11 @@ public class MecanumDrivetrain extends MecanumDrive {
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, double startHeading) {
         return new TrajectoryBuilder(startPose, startHeading, constraints);
     }
+    public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, DriveConstraints driveConstraints) {
+        return new TrajectoryBuilder(startPose, driveConstraints);
+    }
+
+
 
     public void turnAsync(double angle) {
         double heading = getPoseEstimate().getHeading();

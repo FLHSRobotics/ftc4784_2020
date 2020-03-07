@@ -12,15 +12,15 @@ public class ClawSubsystem {
     }
 
     public void trigger(){
-        if(this.intake.getPosition() == 0.04){
-            this.intake.setPosition(0.67);
+        if(this.intake.getPosition() == 0.07){
+            this.intake.setPosition(0.62);
         }else{
-            this.intake.setPosition(0.04);
+            this.intake.setPosition(0.07);
         }
     }
 
     public void pick(){
-        this.intake.setPosition(0.04);
+        this.intake.setPosition(0.07);
     }
 
     public void release(){
